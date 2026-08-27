@@ -44,3 +44,33 @@ MESSAGING    :     Kafka / MSK (Broker) <-------------------------------------+-
 VISUALIZE    :     OpenSearch (DB)      <---( Indexing & Search )---->  DASHBOARD (Kibana)
 ====================================================================================================
 ```
+
+```
+                  ┌─ sensor_json.log
+Python 로그 생성기 ┤
+                  └─ sensor_text.log
+                         │
+                         ▼
+                    Fluent Bit
+                    /         \
+                   /           \
+          JSON 직결             TEXT
+             │                  │
+             │               HTTP
+             │                  ▼
+             │              Logstash
+             │              Grok 변환
+             │                  │
+             ▼                  ▼
+ factory-json-topic      factory-text-topic
+             \                 /
+              \               /
+                 Apache Kafka
+                      │
+          ┌───────────┴───────────┐
+          ▼                       ▼
+       Kafka UI                 Vector
+                                  │
+                                  ▼
+                           AWS Firehose
+```

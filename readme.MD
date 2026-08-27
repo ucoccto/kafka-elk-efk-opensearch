@@ -46,9 +46,9 @@ VISUALIZE    :     OpenSearch (DB)      <---( Indexing & Search )---->  DASHBOAR
 ```
 
 ```
-                  ┌─ sensor_json.log
+                  ┌─ sensor_json.log (반정형 데이터)
 Python 로그 생성기 ┤
-                  └─ sensor_text.log
+                  └─ sensor_text.log (비정형 데이터)
                          │
                          ▼
                     Fluent Bit
@@ -59,18 +59,18 @@ Python 로그 생성기 ┤
              │               HTTP
              │                  ▼
              │              Logstash
-             │              Grok 변환
+             │              Grok 변환 -> 비정형 => 반정형 처리
              │                  │
              ▼                  ▼
  factory-json-topic      factory-text-topic
              \                 /
               \               /
-                 Apache Kafka
+                 Apache Kafka (브로커 데이터 수신) -> AWS 외부 or EC2 or 쿠버네티스 상주 or MSK(전용 AWS 서비스)
                       │
           ┌───────────┴───────────┐
           ▼                       ▼
-       Kafka UI                 Vector
+       Kafka UI(대시보드)        Vector (서비스)
                                   │
                                   ▼
-                           AWS Firehose
+                           AWS Firehose -> 버퍼링 -> s3(브론즈) or opensearch(인덱스(센서/공장관리단위) 검색)
 ```

@@ -22,6 +22,21 @@ MAX_LOG_BYTES = 10 * 1024 * 1024    # 10MB
 BACKUP_COUNT  = 5                   # 로그 파일 최대 개수
 os.makedirs(LOG_DIR, exist_ok=True) # 로그 파일이 생기는 폴더 생성 시도
 
+# 3-2. 로그 발생
+def generate_logs():
+    pass
+
+# 3-1. 메인함수
+def main() -> None:
+    try:
+        while True: # 공장 통상 24시간 가동. 무중단, 강제종료(셧다운)외엔 종료 없음
+            # 로그발생
+            generate_logs()
+            # 잠시대기 -> 테스트상 텀 부여
+            time.sleep(2) # 명시적 대기 -> 추후 조정
+    except Exception as e:
+        print("종료 처리", e)
+
 # 3. 엔트리 포인트 (프로그램 시작점)
 if __name__ == "__main__":
     print("센서 로그 발생 시작. 종료 Ctrl + C")

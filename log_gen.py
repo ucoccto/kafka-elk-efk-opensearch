@@ -22,6 +22,13 @@ MAX_LOG_BYTES = 10 * 1024 * 1024    # 10MB
 BACKUP_COUNT  = 5                   # 로그 파일 최대 개수
 os.makedirs(LOG_DIR, exist_ok=True) # 로그 파일이 생기는 폴더 생성 시도
 
+# 3-3. 로그 파일별 기록, 로테이션관리등 객체 구성
+def create_rotation_logger(name:str, filename:str) -> logging.Logger:
+    pass
+
+json_logger = create_rotation_logger("sensor_json", "sensor_json.log")
+text_logger = create_rotation_logger("sensor_text", "sensor_text.log")
+
 # 3-2. 로그 발생
 def generate_logs() -> None:
     # opensearch에서 date로 인식하게 하기 위해서 ISO-8601 적용
@@ -33,6 +40,8 @@ def generate_logs() -> None:
         "humidity"      : round(random.uniform(30.0, 80.0), 1),   # 습도, 70% 이상 이상치(가정)
         "status"        : "RUNNING"             # 센서 상태 : 가동중
     }
+    # A 채널 : json
+    # B 채널 : text
     pass
 
 # 3-1. 메인함수

@@ -48,7 +48,6 @@ services:
     networks:
       - kafka-net
 
-
   # 4. Vector (Kafka -> Firehose 브릿지 역할)
   vector:
     image: timberio/vector:0.36.0-debian # 최신 안정 버전

@@ -109,3 +109,9 @@ Python 로그 생성기 ┤
             # 로그 발생
             python log_gen.py            
         ```
+
+# 카프카 테스트
+- 컨테이너 접속
+```
+    docker container exec -it kafka-local bash
+```

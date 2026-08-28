@@ -67,7 +67,10 @@ def generate_logs() -> None:
         f"TEMP:{data['temperature']} |   HUMI:{data['humidity']} |   "
         f"STAT:{data['status']}"
     )
-    pass
+    text_logger.info(text)
+
+    # 콘솔 출력 -> 로그 발생중인지 확인
+    print( text )
 
 # 3-1. 메인함수
 def main() -> None:

@@ -61,6 +61,12 @@ def generate_logs() -> None:
     json_logger.info(json.dumps(data, ensure_ascii=False))
 
     # B 채널 : text
+    # 임의 편성, 의도적으로 비정형 데이터 구성하여 로그 처리 반영, 실제는 둘중 하나만 가면됨
+    text = (
+        f"[{data['timestamp']}] ID={data['sensor_id']} |   "
+        f"TEMP:{data['temperature']} |   HUMI:{data['humidity']} |   "
+        f"STAT:{data['status']}"
+    )
     pass
 
 # 3-1. 메인함수

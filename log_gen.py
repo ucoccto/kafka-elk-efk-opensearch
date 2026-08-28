@@ -23,7 +23,16 @@ BACKUP_COUNT  = 5                   # 로그 파일 최대 개수
 os.makedirs(LOG_DIR, exist_ok=True) # 로그 파일이 생기는 폴더 생성 시도
 
 # 3-2. 로그 발생
-def generate_logs():
+def generate_logs() -> None:
+    # opensearch에서 date로 인식하게 하기 위해서 ISO-8601 적용
+    timestamp = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
+    data = {
+        "timestamp"     : timestamp,            # 로그 발생 시간
+        "sensor_id"     : "AI-FACTORY-001",     # 센서 ID
+        "temperature"   : round(random.uniform(70.0, 120.0), 1),  # 온도, 100도이상 이상치(가정)
+        "humidity"      : round(random.uniform(30.0, 80.0), 1),   # 습도, 70% 이상 이상치(가정)
+        "status"        : "RUNNING"             # 센서 상태 : 가동중
+    }
     pass
 
 # 3-1. 메인함수

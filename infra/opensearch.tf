@@ -37,16 +37,16 @@ data "aws_iam_policy_document" "opensearch_access" {
 # opensearch_domain 리소스 생성
 resource "aws_opensearch_domain" "factory" {
   # 도메인 이름
-  domain_name    = local.opensearch_domain_name
+  domain_name = local.opensearch_domain_name
   # 보수적 버전 지정
   engine_version = var.opensearch_engine_version
 
   # 클러스터 설정
   cluster_config {
     # t3.small.search, 확장시 t3.small.search로 스케일링 처리
-    instance_type          = var.opensearch_instance_type
+    instance_type = var.opensearch_instance_type
     # 노드 개수
-    instance_count         = 1
+    instance_count = 1
     # 단일 AZ
     zone_awareness_enabled = false
   }
@@ -74,7 +74,7 @@ resource "aws_opensearch_domain" "factory" {
   # 도메인 접속시 허가된 프로토콜
   domain_endpoint_options {
     # https만 됨
-    enforce_https       = true
+    enforce_https = true
     # TLS 1-2 버전
     tls_security_policy = "Policy-Min-TLS-1-2-2019-07"
   }

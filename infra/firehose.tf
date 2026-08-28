@@ -17,8 +17,8 @@ resource "aws_kinesis_firehose_delivery_stream" "opensearch" {
     s3_backup_mode = "FailedDocumentsOnly"
 
     s3_configuration {
-      role_arn           = aws_iam_role.firehose.arn
-      bucket_arn         = aws_s3_bucket.firehose_backup.arn
+      role_arn   = aws_iam_role.firehose.arn
+      bucket_arn = aws_s3_bucket.firehose_backup.arn
       # 저장되는 위치
       prefix             = "failed-documents/"
       buffering_size     = 5

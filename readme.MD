@@ -113,5 +113,8 @@ Python 로그 생성기 ┤
 # 카프카 테스트
 - 컨테이너 접속
 ```
+    # 접속
     docker container exec -it kafka-local bash
+    # 토픽 생성
+    sh kafka-topics.sh --create --topic spacex --bootstrap-server 127.0.0.1:9092 --partitions 1 --replication-factor 1
 ```

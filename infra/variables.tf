@@ -29,5 +29,15 @@ variable "opensearch_index_name" {
 }
 
 # firehose 이름, firhose->opensearch : iam role name
+variable "firehose_buffer_size" {
+  description = "오픈 서치로 전송할때 최대 버퍼 사이즈(MB)"
+  type        = number
+  default     = 1
+}
+variable "firehose_buffer_interval" {
+  description = "오픈 서치로 전송할때 최대 버퍼 시간(s)"
+  type        = number
+  default     = 60
+}
 
 # vector -> firhose : iam role name

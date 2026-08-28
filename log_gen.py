@@ -39,7 +39,7 @@ def create_rotation_logger(name:str, filename:str) -> logging.Logger:
     # 포멧지정, 실제 메세지 내용만 담는 로그로 구성
     # 레벨 x, 시간 x, 로거명 x
     handler.setFormatter(logging.Formatter("%(message)s"))
-    logger.addHandler( logger )
+    logger.addHandler( handler )
     return logger
 
 # 3-4 각 유형별 로거 생성(획득)

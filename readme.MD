@@ -56,7 +56,7 @@ Python 로그 생성기 ┤
                    /           \
           JSON 직결             TEXT
              │                  │
-             │               HTTP
+             │               HTTP, 5022 포트
              │                  ▼
              │              Logstash
              │              Grok 변환 -> 비정형 => 반정형 처리

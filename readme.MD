@@ -128,6 +128,8 @@ Python 로그 생성기 ┤
 ```
     # 컨슈머
     sh opt/kafka/bin/kafka-console-consumer.sh --topic factory-json-topic --bootstrap-server 127.0.0.1:9092
+
+    sh opt/kafka/bin/kafka-console-consumer.sh --topic factory-text-topic --bootstrap-server 127.0.0.1:9092
 ```
 
 # Vector

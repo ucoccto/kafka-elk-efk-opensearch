@@ -35,10 +35,10 @@ sinks:
 
 
 # 4. sink (output-debug)
-sinks:
-  debug_console:
-    type: "console"
-    inputs:
-      - "add_ingest_time"
-    encoding:
-      codec: "json"
+# sinks:
+#   debug_console:
+#     type: "console"
+#     inputs:
+#       - "add_ingest_time"
+#     encoding:
+#       codec: "json"

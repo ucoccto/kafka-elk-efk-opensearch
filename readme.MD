@@ -100,3 +100,12 @@ Python 로그 생성기 ┤
         - Output 스트림 대부분 서비스 모두 지원 (kafka/opensearch/s3/...)
             - 지원 플러그인 활용
     - fluent-bit.conf -> 수정 -> docker compose restart -> 수정내용이 반영됨
+        - docker compose down  => docker compose up -d
+    - 테스트 
+        ```
+            # fluent-bit 로깅 
+            docker logs -f fluent-bit
+
+            # 로그 발생
+            python log_gen.py            
+        ```

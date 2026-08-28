@@ -1,5 +1,5 @@
-# 1. source (input-local kafka)
-source:
+# 1. sources (input-local kafka)
+sources:
   kafka_to_firehose_source:
     type: "kafka"
     bootstrap_servers:  "kafka:9092"
@@ -19,7 +19,7 @@ transforms:
     type: "remap"
     inputs:
       - "kafka_to_firehose_source"
-    sourse: |
+    source: |
       .vector_ingest_at = now()
 
 # 3. sink (output-aws firehose)

@@ -129,3 +129,11 @@ Python 로그 생성기 ┤
     # 컨슈머
     sh opt/kafka/bin/kafka-console-consumer.sh --topic factory-json-topic --bootstrap-server 127.0.0.1:9092
 ```
+
+# Vector
+- Datadog사에서 개발한 도구
+- Rust 개발. 로그, 매트릭 수집, 변환, 전송 처리. 초고성능, 경량 파이프라인 도구
+- 로그 확인
+```
+    docker logs -f vector
+```

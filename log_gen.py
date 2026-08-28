@@ -22,7 +22,7 @@ MAX_LOG_BYTES = 10 * 1024 * 1024    # 10MB
 BACKUP_COUNT  = 5                   # 로그 파일 최대 개수
 os.makedirs(LOG_DIR, exist_ok=True) # 로그 파일이 생기는 폴더 생성 시도
 
-# 3-3. 로그 파일별 기록, 로테이션관리등 객체 구성
+# 3-3. 로그 파일별 기록, 로테이션관리등 객체 구성 -> 50MB 내에서 총 5개 파일로 로그 관리 구성
 def create_rotation_logger(name:str, filename:str) -> logging.Logger:
     logger = logging.getLogger(name) # 고유한 문자열로 구분되는 로거 객체 획득(최초 생성)
     logger.setLevel(logging.INFO)    # 정보 레벨만 수
@@ -42,6 +42,7 @@ def create_rotation_logger(name:str, filename:str) -> logging.Logger:
     logger.addHandler( logger )
     return logger
 
+# 3-4 각 유형별 로거 생성(획득)
 json_logger = create_rotation_logger("sensor_json", "sensor_json.log")
 text_logger = create_rotation_logger("sensor_text", "sensor_text.log")
 
@@ -56,7 +57,9 @@ def generate_logs() -> None:
         "humidity"      : round(random.uniform(30.0, 80.0), 1),   # 습도, 70% 이상 이상치(가정)
         "status"        : "RUNNING"             # 센서 상태 : 가동중
     }
-    # A 채널 : json
+    # A 채널 : json, dict => 직렬화 => str => 로그기록(info 레벨)
+    json_logger.info(json.dumps(data, ensure_ascii=False))
+
     # B 채널 : text
     pass
 

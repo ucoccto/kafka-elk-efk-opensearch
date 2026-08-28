@@ -116,5 +116,5 @@ Python 로그 생성기 ┤
     # 접속
     docker container exec -it kafka-local bash
     # 토픽 생성
-    sh kafka-topics.sh --create --topic spacex --bootstrap-server 127.0.0.1:9092 --partitions 1 --replication-factor 1
+    sh opt/kafka/bin/kafka-topics.sh --create --topic spacex --bootstrap-server 127.0.0.1:9092 --partitions 1 --replication-factor 1
 ```

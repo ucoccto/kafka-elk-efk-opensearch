@@ -9,3 +9,12 @@ variable "project_name" {
   type        = string
   default     = "de-ai-25-kakfa-efk"
 }
+# opensearch 서비스(<-엘라스틱서치)/ opensearch 대시보드(<-키바나) 접속 가능한 IP 입력
+variable "allowed_cidr" {
+  description = "opensearch 대시보드/API에 접속한 공인 IP x.x.x.x/32"
+  type        = string
+  validation {
+    condition = can(cidrhost(var.allowed_cidr, 0))
+    error_message = "가능한 주소는 CIDR 형식이여야 합니다."
+  }
+}

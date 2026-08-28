@@ -137,3 +137,16 @@ Python 로그 생성기 ┤
 ```
     docker logs -f vector
 ```
+- 로그 샘픔
+```
+{
+    "@timestamp":1787890534.104485,"headers":{},"humidity":71.7,
+    "message_key":null,"offset":18,"partition":0,"sensor_id":"AI-FACTORY-001",
+    "source_type":"kafka","status":"RUNNING","temperature":104.1,
+    "topic":"factory-json-topic",
+
+    # 지연시간 (로그 발생 => vector) 0.013초
+    "timestamp":"2026-08-28T04:15:34.604Z",             
+    "vector_ingest_at":"2026-08-28T04:15:34.617424692Z"
+}
+```

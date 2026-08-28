@@ -1,7 +1,17 @@
 # 1. source (input-local kafka)
 source:
   kafka_to_firehose_source:
-    type:
+    type: "kafka"
+    bootstrap_servers:  "kafka:9092"
+    group_id: "vector-firehose-consumer"
+    topics:
+      - "factory-json-topic"
+      - "factory-text-topic"
+    decoding:
+      codec:  "json"
+    librdkafka_options:
+      "auto.offset.reset":  "earliest"
+    
 
 # 2. transform (처리시간 삽입)
 transforms:

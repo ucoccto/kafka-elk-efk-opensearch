@@ -27,6 +27,107 @@
         - 기타 : 권한, 변수, 등등 조정, 추가
         - firehose에서 기존 opensearch(제거)로 가는 방향성, s3로 변경
 
+# 데이터 파이프라인
+```
+================================================================================
+데이터 파이프라인
+================================================================================
+
+[기존 구간]
+
+Python log_gen.py
+   |
+   | sensor_json.log / sensor_text.log
+   v
+Fluent Bit
+   |-------------------------------|
+   | JSON                          | TEXT (선택 경로 / 기존 설정에서는 주석)
+   v                               v
+factory-json-topic              Logstash
+                                   |
+                                   v
+                            factory-text-topic
+   |                               |
+   +---------------+---------------+
+                   v
+                Kafka
+                   |
+                   | Consume
+                   v
+                Vector
+                   |
+                   | PutRecord / PutRecordBatch
+                   v
+            Amazon Data Firehose
+
+--------------------------------------------------------------------------------
+여기까지 이전 Kafka/Vector/Firehose 수업과 같은 방향성
+--------------------------------------------------------------------------------
+
+[변경되는 지점]
+
+기존 : Firehose -> OpenSearch
+변경 : Firehose -> S3 Bronze
+
+                   |
+                   v
+             S3 Data Lake
+             ├─ bronze/   JSONL.GZ
+             ├─ silver/   Parquet
+             ├─ reject/   JSON
+             └─ gold/     Parquet
+                   ^
+                   |
+            EventBridge (매시간 10분)
+                   |
+                   v
+            Step Functions
+                   |
+       +-----------+-----------------------------+
+       |                                         |
+       v                                         |
+1. Lambda CheckBronze                            |
+       |                                         |
+       v                                         |
+2. Choice : Bronze 있음?                         |
+       | YES                                     |
+       v                                         |
+3. Glue Bronze -> Silver ----------------------> S3 Silver
+       |                                         |
+       v                                         |
+4. Athena MSCK REPAIR                            |
+       |                                         |
+       v                                         |
+5. Lambda Cleanup Gold                           |
+       |                                         |
+       v                                         |
+6. Athena Silver -> Gold ----------------------> S3 Gold
+       |                                         |
+       v                                         |
+7. Lambda Quality Check                          |
+       |                                         |
+       +---- SUCCESS -> SNS                      |
+       +---- FAILURE -> SNS                      |
+                                                 |
+            Glue Data Catalog <------------------+
+                   |
+                   v
+                Athena
+
+================================================================================
+핵심
+================================================================================
+
+기존 수업
+  Collect -> Broker -> Consume -> Deliver -> Search
+  Fluent Bit -> Kafka -> Vector -> Firehose -> OpenSearch
+
+이번 업그레이드
+  Collect -> Broker -> Consume -> Deliver -> Store -> Orchestrate -> Transform -> Analyze
+  Fluent Bit -> Kafka -> Vector -> Firehose -> S3 -> EventBridge -> Step Functions -> Glue/Athena
+
+```
+
 # 인프라 구성
 ```
 eventbridge.tf

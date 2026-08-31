@@ -40,7 +40,34 @@ silver/
             └── hour=13/
                 └── part-xxxx.parquet
 ```
-- 골드
+- 골드 - 집계된 데이터(비즈니스에 부합한 데이터 형태)
+```
+# 시간단 집계 한다면 -> 해당 센서에 대해서 인사이트 도출, 설명, 이해 등 할수 있게 제공
+# 데이터 요구자 DS라면 요청에 맞게 구성...
+{
+  "sensor_id": "SENSOR-003",
+  
+  "year": 2026,
+  "month": 8,
+  "day": 31,
+  "hour": 13,
+
+  "total_count": 3600,
+  "normal_count": 3420,
+  "warn_count": 150,
+  "error_count": 30,
+
+  "avg_temperature": 72.4,
+
+  "max_temperature": 91.2,
+
+  "avg_humidity": 43.8
+  ...
+}
+
+```
+- 위의 silver, gold 데이터 형태에 맞춰서 스키마 구성 필요 -> Glue Data catalog -> db/테이블 구성 -> parquet 저장 -> 열기반  검색/쿼리 -> 속도 이득
+
 
 # 인프라 목표
 - 기존 로그젠 => fluent-bit => kafka => vector => firehose 동일

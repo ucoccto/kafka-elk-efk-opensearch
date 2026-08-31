@@ -16,6 +16,7 @@ BUCKET_NAME = os.environ["BUCKET_NAME"]
 SILVER_TABLE = os.environ["SILVER_TABLE"]
 # Athena/Glue Data Catalog에 등록된 Gold 테이블 이름을 읽는다.
 GOLD_TABLE = os.environ["GOLD_TABLE"]
+KST = timezone(timedelta(hours=9))
 
 # 처리할 기준 시간대를 결정하는 내부 함수다.
 def _target_hour(event: dict) -> datetime:
@@ -43,14 +44,16 @@ def _target_hour(event: dict) -> datetime:
 def lambda_handler(event, context):
     # 입력 event를 기준으로 실제 처리할 시간대를 계산한다.
     target = _target_hour(event or {})
+    # S3 Bronze/Silver/Gold 파티션은 한국시간 기준이므로 KST로 변환한다.
+    partition_time = target.astimezone(KST)
     # 처리 대상 시간에서 연도 값을 YYYY 형식으로 추출한다.
-    year = target.strftime("%Y")
+    year = partition_time.strftime("%Y")
     # 처리 대상 시간에서 월 값을 MM 형식으로 추출한다.
-    month = target.strftime("%m")
+    month = partition_time.strftime("%m")
     # 처리 대상 시간에서 일 값을 DD 형식으로 추출한다.
-    day = target.strftime("%d")
+    day = partition_time.strftime("%d")
     # 처리 대상 시간에서 시 값을 HH 형식으로 추출한다.
-    hour = target.strftime("%H")
+    hour = partition_time.strftime("%H")
 
     # 해당 시간대의 Bronze 데이터가 저장되는 S3 Prefix를 만든다.
     bronze_prefix = f"bronze/year={year}/month={month}/day={day}/hour={hour}/"

@@ -221,6 +221,74 @@ sns.tf
 | 14 | `NotifyFailure`          | Task    | Lambda/Glue/Athena 등의 작업 자체가 실패했을 때 **SNS 실패 알림** 전송                                  |
 | 15 | `PipelineFailed`         | Fail    | 작업 오류를 `PipelineTaskFailed`로 **최종 실패 처리**                                             |
 
+- 작업 시퀀스
+```
+EventBridge
+    │
+    ▼
+① CheckBronze
+   Bronze 데이터 존재 여부 및
+   처리에 필요한 각종 값 생성
+    │
+    ▼
+② BronzeExists
+    │
+    ├── 데이터 없음
+    │       │
+    │       ▼
+    │   ③ NoBronzeData
+    │       정상 종료
+    │
+    └── 데이터 있음
+            │
+            ▼
+④ BronzeToSilver
+   Glue
+   Bronze → Silver
+            │
+            ▼
+⑤ RepairSilverPartitions
+   Athena
+   Silver 파티션 인식/등록
+            │
+            ▼
+⑥ CleanupExistingGold
+   Lambda
+   기존 Gold 데이터 삭제
+            │
+            ▼
+⑦ RegisterGoldPartition
+   Athena
+   Gold 파티션 등록
+            │
+            ▼
+⑧ SilverToGold
+   Athena
+   Silver → Gold 집계/저장
+            │
+            ▼
+⑨ QualityCheck
+   Lambda
+   Gold 데이터 품질 검사
+            │
+            ▼
+⑩ QualityPassed
+       │
+       ├── ok = true
+       │       ↓
+       │  ⑪ NotifySuccess
+       │     SNS 성공 알림
+       │       ↓
+       │      종료
+       │
+       └── ok = false
+               ↓
+          ⑫ NotifyQualityFailure
+             SNS 품질실패 알림
+               ↓
+          ⑬ PipelineQualityFailed
+             최종 실패
+```
 
 
 # 파이썬 파일

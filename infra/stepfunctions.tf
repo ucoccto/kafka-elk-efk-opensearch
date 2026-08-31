@@ -19,14 +19,21 @@ resource "aws_sfn_state_machine" "pipeline" {
     StartAt = "CheckBronze"
     # 전체 State 목록 구성 (분기 과정을 통해서 시나리오에 맞춰 task가 처리)
     States = {
+      # Lambda를 실행하여 **현재 처리할 Bronze 데이터가 있는지 확인**하고, 
+      # 처리 대상 날짜/시간 및 S3 경로·Athena 쿼리 등의 정보를 생성
       CheckBronze = {
+        # task 유형 -> 실행
         Type     = "Task"
+        # 실행의 주체(타겟) : 람다 함수 실행
         Resource = "arn:aws:states:::lambda:invoke"
         Parameters = {
+          # 람다 함수의 이름 
           FunctionName = aws_lambda_function.check_bronze.arn
+          # sfn읋 호출하는 주체 => eb가 전달한 파마미터를 통째($)로 람다 함수의 인자로 (Payload 하위로 전달)
           "Payload.$"  = "$"
         }
         ResultPath = "$.check"
+        # 오류 발생시 처리, 재시도, 간격 등 설정
         Retry = [{
           ErrorEquals     = ["Lambda.ServiceException", "Lambda.AWSLambdaException", "Lambda.SdkClientException"]
           IntervalSeconds = 2
@@ -38,6 +45,7 @@ resource "aws_sfn_state_machine" "pipeline" {
           ResultPath  = "$.error"
           Next        = "NotifyFailure"
         }]
+        # 성공하면, 다음 단계 지정
         Next = "BronzeExists"
       }
 

@@ -6,4 +6,7 @@ locals {
 
   # 추가 및 보정
   firehose_name = "${var.project_name}-firehose"
+
+  # sfn의 리소스 이름
+  sfn_name = "${var.project_name}-sfn"
 }

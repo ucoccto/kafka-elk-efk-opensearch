@@ -371,3 +371,13 @@ EventBridge
        - ~/lambda/quality_check.py
 
 
+# Glue work 유형 
+- G.1X 스펙
+
+| 항목     |        G.1X |
+| ------ | ----------: |
+| DPU    |   **1 DPU** |
+| vCPU   |  **4 vCPU** |
+| Memory |   **16 GB** |
+| Disk   |   **94 GB** |
+| 용도     | 일반적인 ETL 작업 |

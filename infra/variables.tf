@@ -49,3 +49,14 @@ variable "eb_sch_expression" {
   type = string
   default = "cron(10 * * * ? *)"
 }
+
+variable "glue_worker_type" {
+  description = "Glue Worker의 유형"
+  type = string
+  default = "G.1X"
+}
+variable "glue_number_of_workers" {
+  description = "Glue Worker를 몇개 가동"
+  type = number
+  default = 2
+}

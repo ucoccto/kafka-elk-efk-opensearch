@@ -197,8 +197,31 @@ iam-stepfunctions.tf
 iam-glue.tf
 iam-lambda.tf
 sns.tf
+
 ...
 ```
+
+# stepfunctions state 목록 
+
+| 순서 | State                    | Type    | 실제 업무                                                                                 |
+| -: | ------------------------ | ------- | ------------------------------------------------------------------------------------- |
+|  1 | `CheckBronze`            | Task    | Lambda를 실행하여 **현재 처리할 Bronze 데이터가 있는지 확인**하고, 처리 대상 날짜/시간 및 S3 경로·Athena 쿼리 등의 정보를 생성 |
+|  2 | `BronzeExists`           | Choice  | `data_exists` 값을 확인하여 **Bronze 데이터가 있으면 처리 계속**, 없으면 종료                               |
+|  3 | `NoBronzeData`           | Succeed | 처리할 Bronze 데이터가 없을 경우 **정상 종료**                                                       |
+|  4 | `BronzeToSilver`         | Task    | Glue Job을 실행하여 **Bronze 원본 데이터를 정제·변환하고 Silver에 저장**                                  |
+|  5 | `RepairSilverPartitions` | Task    | Athena에서 `MSCK REPAIR TABLE`을 실행하여 **새로 생성된 Silver S3 파티션을 Glue Catalog 테이블에 등록**     |
+|  6 | `CleanupExistingGold`    | Task    | Lambda를 실행하여 **해당 처리 대상의 기존 Gold S3 데이터를 삭제**. 재실행 시 데이터 중복 방지                        |
+|  7 | `RegisterGoldPartition`  | Task    | Athena에서 전달받은 `gold_partition_query`를 실행하여 **처리 대상 Gold 파티션을 테이블에 등록**                |
+|  8 | `SilverToGold`           | Task    | Athena에서 `gold_insert_query`를 실행하여 **Silver 데이터를 집계·가공해서 Gold 파티션에 저장**               |
+|  9 | `QualityCheck`           | Task    | Lambda를 실행하여 **생성된 Gold 결과가 비어 있거나 비정상인지 검사**                                         |
+| 10 | `QualityPassed`          | Choice  | 품질검사 결과 `ok=true`이면 성공 처리, 아니면 품질 실패 처리                                               |
+| 11 | `NotifySuccess`          | Task    | SNS를 통해 **파이프라인 성공 알림**을 전송하고 정상 종료                                                   |
+| 12 | `NotifyQualityFailure`   | Task    | Gold 품질검사 실패 시 **SNS 품질 실패 알림**을 전송                                                   |
+| 13 | `PipelineQualityFailed`  | Fail    | 품질검사 실패를 `GoldQualityCheckFailed` 오류로 **최종 실패 처리**                                    |
+| 14 | `NotifyFailure`          | Task    | Lambda/Glue/Athena 등의 작업 자체가 실패했을 때 **SNS 실패 알림** 전송                                  |
+| 15 | `PipelineFailed`         | Fail    | 작업 오류를 `PipelineTaskFailed`로 **최종 실패 처리**                                             |
+
+
 
 # 파이썬 파일
 - etl glue job

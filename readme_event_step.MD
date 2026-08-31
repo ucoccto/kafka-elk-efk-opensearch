@@ -168,7 +168,19 @@ Step Functions
        terraform -chdir=infra plan
        terraform -chdir=infra apply
 ```
-- 4. 로그 발생 -> ... -> s3://버킷/bronze/*.gzip 확인
+- 4. .env에 FIREHOSE_STREAM_NAME 수정
+```
+       # 이름 조회
+       terraform -chdir=infra output
+
+       # .env 수정
+       FIREHOSE_STREAM_NAME=de-ai-25-eb-step-pipeline-firehose
+
+       # 도커 컴포즈 재구성 => vector 컨테이너의 환경변수로 설정되게 수정
+       docker compose down
+       docker compose up -d
+```
+- 5. 로그 발생 -> ... -> s3://버킷/bronze/*.gzip 확인
 ```
        python log_gen.py
 ```

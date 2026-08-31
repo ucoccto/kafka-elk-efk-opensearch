@@ -5,7 +5,6 @@ resource "aws_glue_catalog_database" "pipeline" {
 }
 
 # Glue가 생성한 Silver Parquet 데이터를 Athena에서 조회할 External Table
-
 resource "aws_glue_catalog_table" "silver" {
   name          = local.silver_table_name
   database_name = aws_glue_catalog_database.pipeline.name

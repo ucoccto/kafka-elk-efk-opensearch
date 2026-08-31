@@ -4,13 +4,13 @@
 # E:브론즈 추출, T:스파크 처리, L:실버 적제
 # 1. 소스는 어디에? -> S3
 resource "aws_s3_object" "glue_script" {
-    bucket = aws_s3_bucket.data_lake.id
-    # 소스 -> key
-    key = "scripts/glue/bronze_to_silver.py"
-    # 원소스 위치
-    source = "${path.module}/../glue/bronze_to_silver.py"
-    # 업로드된 파일 변경 여부 판단 -> 암호화, 해시 등등 활용
-    etag = filemd5("${path.module}/../glue/bronze_to_silver.py")
+  bucket = aws_s3_bucket.data_lake.id
+  # 소스 -> key
+  key = "scripts/glue/bronze_to_silver.py"
+  # 원소스 위치
+  source = "${path.module}/../glue/bronze_to_silver.py"
+  # 업로드된 파일 변경 여부 판단 -> 암호화, 해시 등등 활용
+  etag = filemd5("${path.module}/../glue/bronze_to_silver.py")
 }
 
 # 2. JOB 구성
@@ -32,9 +32,9 @@ resource "aws_glue_job" "bronze_to_silver" {
   }
 
   default_arguments = {
-    "--job-language"                = "python"
-    "--enable-glue-datacatalog"     = "true"
+    "--job-language"                     = "python"
+    "--enable-glue-datacatalog"          = "true"
     "--enable-continuous-cloudwatch-log" = "true"
-    "--TempDir"                     = "s3://${aws_s3_bucket.data_lake.id}/glue-temp/"
+    "--TempDir"                          = "s3://${aws_s3_bucket.data_lake.id}/glue-temp/"
   }
 }

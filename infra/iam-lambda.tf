@@ -21,12 +21,12 @@ resource "aws_iam_role_policy_attachment" "lambda_basic" {
 
 data "aws_iam_policy_document" "lambda_s3" {
   statement {
-    actions = ["s3:ListBucket"]
+    actions   = ["s3:ListBucket"]
     resources = [aws_s3_bucket.data_lake.arn]
   }
 
   statement {
-    actions = ["s3:GetObject", "s3:DeleteObject"]
+    actions   = ["s3:GetObject", "s3:DeleteObject"]
     resources = ["${aws_s3_bucket.data_lake.arn}/*"]
   }
 }

@@ -8,7 +8,7 @@ resource "aws_sfn_state_machine" "pipeline" {
 
   # 로그
   logging_configuration {
-    log_destination = "${aws_cloudwatch_log_group.stepfunctions.arn}"
+    log_destination = aws_cloudwatch_log_group.stepfunctions.arn
     # 입력, 출력 모든 로그 포함
     include_execution_data = true
     # 로그 수준 전체
@@ -27,14 +27,14 @@ resource "aws_sfn_state_machine" "pipeline" {
       # 처리 대상 날짜/시간 및 S3 경로·Athena 쿼리 등의 정보를 생성
       CheckBronze = {
         # task 유형 -> 실행
-        Type     = "Task"
+        Type = "Task"
         # 실행의 주체(타겟) : 람다 함수 실행
         Resource = "arn:aws:states:::lambda:invoke"
         Parameters = {
           # 람다 함수의 이름 
           FunctionName = aws_lambda_function.check_bronze.arn
           # sfn읋 호출하는 주체 => eb가 전달한 파마미터를 통째($)로 람다 함수의 인자로 (Payload 하위로 전달)
-          "Payload.$"  = "$"
+          "Payload.$" = "$"
         }
         ResultPath = "$.check"
         # 오류 발생시 처리, 재시도, 간격 등 설정
@@ -73,14 +73,14 @@ resource "aws_sfn_state_machine" "pipeline" {
         Parameters = {
           JobName = aws_glue_job.bronze_to_silver.name
           Arguments = {
-            "--SOURCE_PATH.$"        = "$.check.Payload.source_path"
-            "--SILVER_BASE_PATH.$"   = "$.check.Payload.silver_base_path"
-            "--REJECT_BASE_PATH.$"   = "$.check.Payload.reject_base_path"
-            "--TARGET_YEAR.$"        = "$.check.Payload.year"
-            "--TARGET_MONTH.$"       = "$.check.Payload.month"
-            "--TARGET_DAY.$"         = "$.check.Payload.day"
-            "--TARGET_HOUR.$"        = "$.check.Payload.hour"
-            "--OUTPUT_PARTITIONS"    = tostring(var.glue_output_partitions)
+            "--SOURCE_PATH.$"      = "$.check.Payload.source_path"
+            "--SILVER_BASE_PATH.$" = "$.check.Payload.silver_base_path"
+            "--REJECT_BASE_PATH.$" = "$.check.Payload.reject_base_path"
+            "--TARGET_YEAR.$"      = "$.check.Payload.year"
+            "--TARGET_MONTH.$"     = "$.check.Payload.month"
+            "--TARGET_DAY.$"       = "$.check.Payload.day"
+            "--TARGET_HOUR.$"      = "$.check.Payload.hour"
+            "--OUTPUT_PARTITIONS"  = tostring(var.glue_output_partitions)
           }
         }
         ResultPath = "$.glue"
@@ -214,8 +214,8 @@ resource "aws_sfn_state_machine" "pipeline" {
         Type     = "Task"
         Resource = "arn:aws:states:::sns:publish"
         Parameters = {
-          TopicArn  = aws_sns_topic.pipeline.arn
-          Subject   = "Data pipeline SUCCESS"
+          TopicArn    = aws_sns_topic.pipeline.arn
+          Subject     = "Data pipeline SUCCESS"
           "Message.$" = "States.JsonToString($)"
         }
         End = true

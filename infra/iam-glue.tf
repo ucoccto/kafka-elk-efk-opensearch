@@ -21,7 +21,7 @@ resource "aws_iam_role_policy_attachment" "glue_service" {
 
 data "aws_iam_policy_document" "glue_s3" {
   statement {
-    actions = ["s3:ListBucket", "s3:GetBucketLocation"]
+    actions   = ["s3:ListBucket", "s3:GetBucketLocation"]
     resources = [aws_s3_bucket.data_lake.arn]
   }
 

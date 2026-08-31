@@ -46,25 +46,33 @@ variable "tags" {
 # 추가되는 리소스에 맞춰 변수 추가
 variable "eb_sch_expression" {
   description = "이벤트브릿지 스케쥴(UTC)"
-  type = string
-  default = "cron(10 * * * ? *)"
+  type        = string
+  default     = "cron(10 * * * ? *)"
 }
 
 variable "glue_worker_type" {
   description = "Glue Worker의 유형"
-  type = string
-  default = "G.1X"
+  type        = string
+  default     = "G.1X"
 }
 variable "glue_number_of_workers" {
   description = "Glue Worker를 몇개 가동"
-  type = number
-  default = 2
+  type        = number
+  default     = 2
 }
 
 # 성공/실패 => 메일로 받을 수 잇도록 선택 저장
 variable "notification_email" {
   description = "선택, SNS 이메일 구독 주소"
-  type = number
-  default = null
-  nullable = true
+  type        = number
+  default     = null
+  nullable    = true
+}
+
+# var.glue_output_partitions
+# 브론즈에 파일이 1000개(gzip) => 실버에서는 1개의 parquet로 구성하겠다는 설정
+variable "glue_output_partitions" {
+  description = "시간 파티션당 silver parquet 파일 수"
+  type        = number
+  default     = 1
 }

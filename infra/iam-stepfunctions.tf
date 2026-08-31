@@ -19,7 +19,7 @@ resource "aws_iam_role" "stepfunctions" {
 data "aws_iam_policy_document" "stepfunctions" {
   # 람다 함수 호출 -> 해당 함수 리소스 -> 3개 지정
   statement {
-    sid = "InvokeLambdas"
+    sid     = "InvokeLambdas"
     actions = ["lambda:InvokeFunction"]
     resources = [
       aws_lambda_function.check_bronze.arn,

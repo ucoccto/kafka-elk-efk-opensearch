@@ -10,6 +10,6 @@ resource "aws_cloudwatch_log_stream" "firehose" {
 }
 
 resource "aws_cloudwatch_log_group" "stepfunctions" {
-  name              = "aws/sfn/states/${local.sfn_name}"
+  name              = "/aws/sfn/states/${local.sfn_name}"
   retention_in_days = 7
 }

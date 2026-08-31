@@ -199,3 +199,11 @@ iam-lambda.tf
 sns.tf
 ...
 ```
+
+# 파이썬 파일
+- etl glue job
+       - ~/glue/bronze_to_silver.py
+- lambda
+       - ~/lambda/check_bronze.py
+       - ~/lambda/cleanup_gold.py
+       - ~/lambda/quality_check.py

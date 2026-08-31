@@ -1,3 +1,4 @@
+# states -> sfn 정책 조회
 data "aws_iam_policy_document" "stepfunctions_assume" {
   statement {
     effect = "Allow"
@@ -8,13 +9,15 @@ data "aws_iam_policy_document" "stepfunctions_assume" {
     actions = ["sts:AssumeRole"]
   }
 }
-
+# 위의 정책의 기반으로 iam role 생성
 resource "aws_iam_role" "stepfunctions" {
   name               = "${var.project_name}-sfn-role"
   assume_role_policy = data.aws_iam_policy_document.stepfunctions_assume.json
 }
 
+# 추가 정책 필요
 data "aws_iam_policy_document" "stepfunctions" {
+  # 람다 함수 호출 -> 해당 함수 리소스 -> 3개 지정
   statement {
     sid = "InvokeLambdas"
     actions = ["lambda:InvokeFunction"]
@@ -24,7 +27,7 @@ data "aws_iam_policy_document" "stepfunctions" {
       aws_lambda_function.quality_check.arn,
     ]
   }
-
+  # Glue 실행 권한
   statement {
     sid = "RunGlue"
     actions = [
@@ -35,7 +38,7 @@ data "aws_iam_policy_document" "stepfunctions" {
     ]
     resources = ["*"]
   }
-
+  # 아테나 실행
   statement {
     sid = "RunAthena"
     actions = [
@@ -49,7 +52,7 @@ data "aws_iam_policy_document" "stepfunctions" {
     ]
     resources = ["*"]
   }
-
+  # 스키마 관련 권한 => parquet 관련
   statement {
     sid = "GlueCatalogForAthena"
     actions = [
@@ -65,7 +68,7 @@ data "aws_iam_policy_document" "stepfunctions" {
     ]
     resources = ["*"]
   }
-
+  # s3 저장/삭제/...관련 권한
   statement {
     sid = "AthenaS3"
     actions = [
@@ -83,13 +86,13 @@ data "aws_iam_policy_document" "stepfunctions" {
       "${aws_s3_bucket.data_lake.arn}/*",
     ]
   }
-
+  # 작업의 완료 통보하는 권한 -> sns
   statement {
     sid       = "Notify"
     actions   = ["sns:Publish"]
     resources = [aws_sns_topic.pipeline.arn]
   }
-
+  # 로깅 -> 각 작업에 대한 로그 관련 처리
   statement {
     sid = "StepFunctionsLogging"
     actions = [
@@ -105,7 +108,7 @@ data "aws_iam_policy_document" "stepfunctions" {
     resources = ["*"]
   }
 }
-
+# role에 추가 정책 반영
 resource "aws_iam_role_policy" "stepfunctions" {
   name   = "${var.project_name}-sfn-policy"
   role   = aws_iam_role.stepfunctions.id

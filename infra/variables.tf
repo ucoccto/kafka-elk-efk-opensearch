@@ -60,3 +60,11 @@ variable "glue_number_of_workers" {
   type = number
   default = 2
 }
+
+# 성공/실패 => 메일로 받을 수 잇도록 선택 저장
+variable "notification_email" {
+  description = "선택, SNS 이메일 구독 주소"
+  type = number
+  default = null
+  nullable = true
+}

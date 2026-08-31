@@ -8,7 +8,11 @@ resource "aws_sfn_state_machine" "pipeline" {
 
   # 로그
   logging_configuration {
-    
+    log_destination = "${aws_cloudwatch_log_group.stepfunctions.arn}"
+    # 입력, 출력 모든 로그 포함
+    include_execution_data = true
+    # 로그 수준 전체
+    level = "ALL"
   }
 
   # task 정의 -> 7개 task 정의 (airflow의 7개의 task 정의와 맥락이 같음)

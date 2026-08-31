@@ -15,6 +15,8 @@ resource "aws_kinesis_firehose_delivery_stream" "bronze" {
     buffering_interval = var.firehose_buffer_interval
     # 압축형태
     compression_format = "GZIP"
+    # 서울시간대 조정
+    custom_time_zone = "Asia/Seoul"
     # 프리픽스
     prefix = "bronze/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/"
     # 에러프리픽스

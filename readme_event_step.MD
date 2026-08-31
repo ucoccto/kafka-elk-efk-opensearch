@@ -1,4 +1,40 @@
-# 목표
+# 데이터 목표
+- 메달리온 아킥텍쳐 기본
+- 브론즈 : 원본 데이터 
+```
+{
+  "timestamp": "2026-08-31T13:25:14+09:00",
+  "sensor_id": "SENSOR-003",
+  "temperature": 87.5,
+  "humidity": 42.1,
+  "status": "WARN"
+}
+```
+- 실버 : 정제된 데이터
+```
+{
+  "timestamp": "2026-08-31T13:25:14+09:00",
+  "sensor_id": "SENSOR-003",
+  "temperature": 87.5,
+  "humidity": 42.1,
+  "status": "WARN",
+  "year": 2026,
+  "month": 8,
+  "day": 31,
+  "hour": 13
+}
+```
+```
+silver/
+└── year=2026/
+    └── month=08/
+        └── day=31/
+            └── hour=13/
+                └── part-xxxx.parquet
+```
+- 골드
+
+# 인프라 목표
 - 기존 로그젠 => fluent-bit => kafka => vector => firehose 동일
     - kafka를 굳이 사용하는 이유?
         - 데이터 트레픽이 급상승, 처리량 많아질때 
@@ -298,3 +334,5 @@ EventBridge
        - ~/lambda/check_bronze.py
        - ~/lambda/cleanup_gold.py
        - ~/lambda/quality_check.py
+
+

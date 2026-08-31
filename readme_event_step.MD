@@ -50,7 +50,7 @@ factory-json-topic              Logstash
    |                               |
    +---------------+---------------+
                    v
-                Kafka
+                Kafka -> 데이터 폭주시 안정적공급(누락x), 대량 처리 안정적, 공급/소비 분린(브로커)
                    |
                    | Consume
                    v
@@ -78,10 +78,10 @@ factory-json-topic              Logstash
              └─ gold/     Parquet
                    ^
                    |
-            EventBridge (매시간 10분)
+            EventBridge (매시간 10분) : 스케줄링 처리, 매시간 10분에 Step Functions 지시
                    |
                    v
-            Step Functions
+            Step Functions : 7개의 job을 순차 작동하여 데이터 처리 -> 배치 오케스트레이션(EventBridge 포함)
                    |
        +-----------+-----------------------------+
        |                                         |
@@ -112,7 +112,7 @@ factory-json-topic              Logstash
             Glue Data Catalog <------------------+
                    |
                    v
-                Athena
+                Athena : 최종 조회 -> 결과셋 -> 대시보드/기타 서비스 전개
 
 ================================================================================
 핵심
@@ -126,6 +126,27 @@ factory-json-topic              Logstash
   Collect -> Broker -> Consume -> Deliver -> Store -> Orchestrate -> Transform -> Analyze
   Fluent Bit -> Kafka -> Vector -> Firehose -> S3 -> EventBridge -> Step Functions -> Glue/Athena
 
+파이썬 작성 (task 작업)
+    - lambda 처리 -> s3 저장
+    - glue job (ETL) 처리 -> s3 저장
+```
+
+# Step Functions
+```
+S3 Bronze
+   
+EventBridge
+   ↓
+Step Functions
+   ├─ Lambda : Bronze 존재 확인
+   ├─ Glue   : Bronze → Silver Parquet
+   ├─ Athena : Silver Partition 등록
+   ├─ Lambda : 기존 Gold 삭제
+   ├─ Athena : Silver → Gold 집계
+   ├─ Lambda : Gold 품질검사
+   └─ SNS    : 성공/실패
+                ↓
+        S3 Silver / Gold
 ```
 
 # 인프라 구성

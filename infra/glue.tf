@@ -18,6 +18,7 @@ resource "aws_glue_job" "bronze_to_silver" {
   name     = local.glue_job_name
   role_arn = aws_iam_role.glue.arn
 
+  # 구동 환경 구성
   glue_version      = "4.0"
   worker_type       = var.glue_worker_type
   number_of_workers = var.glue_number_of_workers

@@ -17,5 +17,7 @@ locals {
 
   # glue
   glue_job_name = "${var.project_name}-bronze-to-silver"
+  # athena 리소스명
+  workgroup_name = "${var.project_name}-athena-wg"
 }
 

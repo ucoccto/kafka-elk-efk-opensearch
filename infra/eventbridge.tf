@@ -38,4 +38,21 @@ resource "aws_cloudwatch_event_rule" "hourly" {
   # 스케줄 주기 표기 (매시간 10분)
   schedule_expression = var.eb_sch_expression
 }
-# 이벤트브릿지
+# 이벤트브릿지가 스케줄이 되면 누구를 연결.실행등 처리할것인지
+resource "aws_cloudwatch_event_target" "stepfunctions" {
+    # rule, 내부 규칙
+    rule = aws_cloudwatch_event_rule.hourly.name
+    # 상호간 식별자
+    target_id = "${var.project_name}-sfn-pipeline"
+    # 타겟 리소스
+    arn = aws_sfn_state_machine.pipeline.arn
+    # role, 해당 서비스를 이용한 role 지정
+    role_arn = aws_iam_role.eventbridge.arn
+
+    # sfn 호출/작업 지시할대 전달할 파라미터, 데이터 정의
+    # 간단한 신호만 부여
+    input = jsonencode({
+        source = "eventbridge-schedule"
+    })
+  
+}

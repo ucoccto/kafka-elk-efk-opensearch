@@ -44,3 +44,8 @@ variable "tags" {
 }
 
 # 추가되는 리소스에 맞춰 변수 추가
+variable "eb_sch_expression" {
+  description = "이벤트브릿지 스케쥴(UTC)"
+  type = string
+  default = "cron(10 * * * ? *)"
+}

@@ -29,3 +29,13 @@ resource "aws_iam_role_policy" "eventbridge" {
   role   = aws_iam_role.eventbridge.id
   policy = data.aws_iam_policy_document.eventbridge.json
 }
+
+# 스케줄 관련 본 업무
+# 특정 주기 단위로 이벤트브릿지 규칙 생성
+resource "aws_cloudwatch_event_rule" "hourly" {
+  name = "${var.project_name}-hourly"
+  description = "10 minute, data pipeline run"
+  # 스케줄 주기 표기 (매시간 10분)
+  schedule_expression = var.eb_sch_expression
+}
+# 이벤트브릿지

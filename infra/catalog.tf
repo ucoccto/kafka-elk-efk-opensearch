@@ -4,6 +4,8 @@ resource "aws_glue_catalog_database" "pipeline" {
   name = local.glue_database_name
 }
 
+# Glue가 생성한 Silver Parquet 데이터를 Athena에서 조회할 External Table
+
 resource "aws_glue_catalog_table" "silver" {
   name          = local.silver_table_name
   database_name = aws_glue_catalog_database.pipeline.name
@@ -24,87 +26,79 @@ resource "aws_glue_catalog_table" "silver" {
     }
 
     columns {
-      name = "schema_version"
-      type = "string"
-    }
-
-    columns {
       name = "event_id"
       type = "string"
     }
-
     columns {
       name = "occurred_at"
       type = "timestamp"
     }
-
-    columns {
-      name = "generated_at_utc"
-      type = "timestamp"
-    }
-
-    columns {
-      name = "event_type"
-      type = "string"
-    }
-
     columns {
       name = "sensor_id"
       type = "string"
     }
-
     columns {
       name = "temperature"
       type = "double"
     }
-
     columns {
       name = "humidity"
       type = "double"
     }
-
     columns {
       name = "status"
       type = "string"
     }
-
     columns {
-      name = "line"
+      name = "source_topic"
       type = "string"
     }
-
     columns {
-      name = "machine"
-      type = "string"
+      name = "kafka_partition"
+      type = "int"
     }
-
+    columns {
+      name = "kafka_offset"
+      type = "bigint"
+    }
+    columns {
+      name = "vector_ingest_at"
+      type = "timestamp"
+    }
+    columns {
+      name = "temperature_alert"
+      type = "boolean"
+    }
+    columns {
+      name = "humidity_alert"
+      type = "boolean"
+    }
     columns {
       name = "processed_at"
       type = "timestamp"
     }
   }
 
+  # S3의 Hive 스타일 year/month/day/hour 경로를 Athena 파티션으로 사용한다.
   partition_keys {
     name = "year"
     type = "string"
   }
-
   partition_keys {
     name = "month"
     type = "string"
   }
-
   partition_keys {
     name = "day"
     type = "string"
   }
-
   partition_keys {
     name = "hour"
     type = "string"
   }
 }
 
+# Silver를 센서별/시간별로 집계한 Gold Parquet 데이터를 조회할 External Table
 resource "aws_glue_catalog_table" "gold" {
   name          = local.gold_table_name
   database_name = aws_glue_catalog_database.pipeline.name
@@ -128,34 +122,32 @@ resource "aws_glue_catalog_table" "gold" {
       name = "sensor_id"
       type = "string"
     }
-
     columns {
       name = "event_count"
       type = "bigint"
     }
-
     columns {
       name = "avg_temperature"
       type = "double"
     }
-
     columns {
       name = "avg_humidity"
       type = "double"
     }
-
     columns {
       name = "max_temperature"
       type = "double"
     }
-
     columns {
-      name = "warn_count"
+      name = "max_humidity"
+      type = "double"
+    }
+    columns {
+      name = "high_temperature_count"
       type = "bigint"
     }
-
     columns {
-      name = "error_count"
+      name = "high_humidity_count"
       type = "bigint"
     }
   }
@@ -164,17 +156,14 @@ resource "aws_glue_catalog_table" "gold" {
     name = "year"
     type = "string"
   }
-
   partition_keys {
     name = "month"
     type = "string"
   }
-
   partition_keys {
     name = "day"
     type = "string"
   }
-
   partition_keys {
     name = "hour"
     type = "string"

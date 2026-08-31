@@ -8,7 +8,7 @@ resource "aws_sfn_state_machine" "pipeline" {
 
   # 로그
   logging_configuration {
-    log_destination = aws_cloudwatch_log_group.stepfunctions.arn
+    log_destination = "${aws_cloudwatch_log_group.stepfunctions.arn}:*"
     # 입력, 출력 모든 로그 포함
     include_execution_data = true
     # 로그 수준 전체

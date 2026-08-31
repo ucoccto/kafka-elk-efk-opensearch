@@ -34,13 +34,13 @@ resource "aws_iam_role_policy" "firehose" {
           "s3:GetBucketLocation",
           "s3:GetObject",
           "s3:ListBucket",
-          "s3:ListBucketMultipartUploads"          
+          "s3:ListBucketMultipartUploads"
         ]
         Resource = [
           aws_s3_bucket.data_lake.arn,
           "${aws_s3_bucket.data_lake.arn}/*"
         ]
-      },      
+      },
       {
         Sid    = "CloudWatchErrorLogging"
         Effect = "Allow"

@@ -160,6 +160,22 @@ Step Functions
        - 프로젝트명, firehose 크기/시간 
 
 - 2. firehose에서 s3로 적제되게 조정 -> Data Lake 구성완료
+
+- 3. 인프라 구성
+```
+       terraform -chdir=infra fmt
+       terraform -chdir=infra validate
+       terraform -chdir=infra plan
+       terraform -chdir=infra apply
+```
+- 4. 로그 발생 -> ... -> s3://버킷/bronze/*.gzip 확인
+```
+       python log_gen.py
+```
+
+
+
+
 ```
 eventbridge.tf
 stepfunctions.tf

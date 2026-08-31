@@ -40,8 +40,8 @@ resource "aws_lambda_function" "check_bronze" {
     environment {
       variables = {
         BUCKET_NAME  = aws_s3_bucket.data_lake.id
-        SILVER_TABLE = 
-        GOLE_TABLE   = 
+        SILVER_TABLE = aws_glue_catalog_table.silver.name
+        GOLE_TABLE   = aws_glue_catalog_table.gold.name
       }
     }
 }

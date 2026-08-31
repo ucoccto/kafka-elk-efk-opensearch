@@ -26,3 +26,14 @@
         - glue : 데이터 구조에 따른 스키마, ETL JOB을 제공(스파크, pandas 활용)
         - 기타 : 권한, 변수, 등등 조정, 추가
         - firehose에서 기존 opensearch(제거)로 가는 방향성, s3로 변경
+
+# 인프라 구성
+```
+eventbridge.tf
+stepfunctions.tf
+glue.tf
+catalog.tf
+athena.tf
+iam-xxx.tf
+...
+```

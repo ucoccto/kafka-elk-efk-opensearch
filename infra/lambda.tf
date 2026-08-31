@@ -21,9 +21,9 @@ data "archive_file" "quality_check" {
 # 람다 함수 3개 리소스 생성
 resource "aws_lambda_function" "check_bronze" {
     # 이름
-    function_name = 
+    function_name = "${var.project_name}-check-bronze"
     # 업무 => 권한 => role
-    role = 
+    role = aws_iam_role.
     # 파이썬 작동 => 런타임 환경
     runtime = 
     # 엔트리포인트 (시작점 지정)
